@@ -1,0 +1,58 @@
+# Node modules
+node_modules/
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+
+# Build directories
+dist/
+build/
+public/
+
+# Dependency directories
+.bower_components/
+jspm_packages/
+
+# IDE and editor directories and files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# Operating system files
+.DS_Store
+Thumbs.db
+*.swp
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Optional npm cache directory
+.npm/
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Optional eslint cache
+.eslintcache
+
+# VS Code settings
+.vscode/
+
+# Local test and config files
+tests/.env
+tests/.env.local
+
+# ECharts specific files (if any)
+# Add any ECharts specific files or directories you want to ignore here
