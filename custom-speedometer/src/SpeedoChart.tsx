@@ -1,7 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 
-const SpeedoChart: React.FC<{ progress: number }> = ({ progress }) => {
+interface SpeedoChartProps {
+  min: number;
+  max: number;
+  progress: number;
+}
+
+const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -13,8 +19,8 @@ const SpeedoChart: React.FC<{ progress: number }> = ({ progress }) => {
       },
       xAxis: {
         type: 'value',
-        min: 0,
-        max: 100,  // Max value for the progress bar
+        min: min,
+        max: max,  // Max value for the progress bar
         show: false, // Hide the axis lines
       },
       yAxis: {
@@ -28,7 +34,7 @@ const SpeedoChart: React.FC<{ progress: number }> = ({ progress }) => {
           type: 'custom',
           renderItem: (params: any, api: any) => {
             const barWidth = api.size([api.value(0), 0])[0];
-            const barHeight = api.size([0, 1])[1] / 2;
+            const barHeight = api.size([api.value(0), 0])[1];
 
             return {
               type: 'rect',
