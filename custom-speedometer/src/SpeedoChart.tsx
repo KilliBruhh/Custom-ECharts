@@ -1,15 +1,35 @@
 import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 
+
 interface SpeedoChartProps {
   min: number;
   max: number;
   progress: number;
 }
 
+const calculatePercentage = (minVal:number, maxVal:number, progressVal:number): number => {
+
+  // Determine min and max for calculation
+  const min = Math.min(minVal, maxVal);
+  const max = Math.max(minVal, maxVal);
+
+  // Calculate the percentage of progress
+  const percentage = ((progressVal) / (max)) * 100;
+
+  // Clamp the percentage between 0 and 100
+  console.log("Percentage: "+percentage);
+  console.log("MIN alue: " +min);
+  console.log("MAX Value: "+max);
+
+  return percentage;
+}
+
 const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
   const chartRef = useRef<HTMLDivElement>(null);
 
+  const calculatedData = calculatePercentage(min, max, progress);
+  console.log(calculatePercentage(min, max, progress))
   useEffect(() => {
     const chart = echarts.init(chartRef.current!);
 
@@ -19,8 +39,8 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
       },
       xAxis: {
         type: 'value',
-        min: min,
-        max: max,  // Max value for the progress bar
+        min: 0,
+        max: 100,  // Max value for the progress bar
         show: false, // Hide the axis lines
       },
       yAxis: {
@@ -71,7 +91,7 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
               },
             };
           },
-          data: [[progress]], // Dynamic progress value
+          data: [[calculatedData]], // Dynamic progress value
         },
       ],
     };

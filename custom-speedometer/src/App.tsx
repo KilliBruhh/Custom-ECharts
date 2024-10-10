@@ -5,7 +5,7 @@ const App = () => {
 
   return (
     <div>
-      <SpeedoChart min={0} max={100} progress={10} />
+      <SpeedoChart min={50} max={1000} progress={50} />
     </div>
   );
 };
