@@ -6,7 +6,7 @@ const App = () => {
 
   return (
     <div>
-      <SpeedoChart />
+      <SpeedoChart progress={30} />
     </div>
   );
 };

@@ -1,77 +1,83 @@
 import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 
-const CustomBarChart = () => {
-  const chartRef = useRef<HTMLDivElement | null>(null);
+const SpeedoChart: React.FC<{ progress: number }> = ({ progress }) => {
+  const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const chart = echarts.init(chartRef.current);
+    const chart = echarts.init(chartRef.current!);
 
-    // Define the custom bar chart option
-    const option = {
-      tooltip: {
-        trigger: 'item',
+    const options = {
+      title: {
+        text: 'Custom Progress Bar',
       },
       xAxis: {
-        show: false,
+        type: 'value',
+        min: 0,
+        max: 100,  // Max value for the progress bar
+        show: false, // Hide the axis lines
       },
       yAxis: {
-        show: false,
+        type: 'category',
+        data: ['Progress'], // Label for the progress bar
+        show: false, // Hide the axis labels
       },
       series: [
+        // Background of the progress bar
         {
           type: 'custom',
-          renderItem: function (_params: any, api: any) {
-            const total = api.value(0);
-            const value = api.value(1);
-            const angle = (value / total) * Math.PI;
-
-            const x = api.getWidth() / 2;
-            const y = api.getHeight();
-            const radius = Math.min(x, y) / 2;
+          renderItem: (params: any, api: any) => {
+            const barWidth = api.size([api.value(0), 0])[0];
+            const barHeight = api.size([0, 1])[1] / 2;
 
             return {
-              type: 'arc',
+              type: 'rect',
               shape: {
-                cx: x,
-                cy: y,
-                r: radius,
-                r0: 0,
-                startAngle: -Math.PI,
-                endAngle: -Math.PI + angle,
+                x: 0,
+                y: params.coordSys.height / 2 - barHeight / 2,
+                width: api.coord([100, 0])[0], // Full width
+                height: barHeight,
               },
               style: {
-                fill: api.visual('color'), // Add color to the arc
+                fill: '#e0e0e0', // Background color
               },
             };
           },
-          data: [
-            { name: 'Data 1', value: 30 },
-            { name: 'Data 2', value: 70 },
-            { name: 'Data 3', value: 10 },
-          ],
+          data: [[0]], // Static value for the background
+        },
+        // Progress indicator
+        {
+          type: 'custom',
+          renderItem: (params: any, api: any) => {
+            const progressWidth = api.coord([api.value(0), 0])[0];
+            const barHeight = api.size([0, 1])[1] / 2;
+
+            return {
+              type: 'rect',
+              shape: {
+                x: 0,
+                y: params.coordSys.height / 2 - barHeight / 2,
+                width: progressWidth, // Dynamic width based on progress
+                height: barHeight,
+              },
+              style: {
+                fill: '#4caf50', // Progress color (green)
+              },
+            };
+          },
+          data: [[progress]], // Dynamic progress value
         },
       ],
     };
 
-    // Render the chart
-    chart.setOption(option);
+    chart.setOption(options);
 
-    // Cleanup function
     return () => {
       chart.dispose();
     };
-  }, []);
+  }, [progress]);
 
-  return (
-    <div>
-      <h2>Half Pie Chart</h2>
-      <div
-        ref={chartRef}  // Attach ref to the chart container
-        style={{ width: '600px', height: '400px' }}  // Set size for the chart
-      />
-    </div>
-  );  // End return
+  return <div ref={chartRef} style={{ width: '100%', height: '100px' }} />;
 };
 
-export default CustomBarChart;
+export default SpeedoChart;
