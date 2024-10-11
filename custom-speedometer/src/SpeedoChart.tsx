@@ -34,52 +34,46 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
 
     const options = {
       title: {
-        text: 'Custom Arch Chart',
-        left: 'center',
+        text: 'Arch Chart Example',
       },
       xAxis: {
-        show: false
+          min: -1,
+          max: 1,
+          show: false
       },
       yAxis: {
-        show: false
-      },
-      tooltip: {
-        trigger: 'item',
+          min: 0,
+          max: 1,
+          show: false
       },
       series: [
         {
           type: 'custom',
-          renderItem: (
+          renderItem: function (
             _params: any, 
-            api: any
-          ) => {
-            const percent = api.value(0); // Access the value for rendering
-            const startAngle = Math.PI; // 180 degrees start
-            const endAngle = startAngle - (percent / 100) * Math.PI; // Scale the angle based on percentage
+            api: any)  
+            {
+              var x = api.coord([api.value(0), 0])[0];
+              var y = api.coord([0, 0])[1];
+              var radius = api.size([0, 1])[1];
 
-            const cx = 100; // Center X of the arch
-            const cy = 60;  // Center Y of the arch
-            const r = 50;   // Radius of the arch
-
-            const style = api.style({
-              stroke: 'rgba(255, 0, 0, 0.5)',
-              fill: 'rgba(255, 0, 0, 0.2)',
-              lineWidth: 2,
-            });
-  
-            return {
-              type: 'arc',
-              shape: {
-                cx,
-                cy,
-                r,
-                startAngle,
-                endAngle,
-              },
-              style: style,
-            };
+              return {
+                  type: 'arc',
+                  shape: {
+                      cx: x,
+                      cy: y,
+                      r: radius * .8,  // Adjust the radius of the arch
+                      startAngle: Math.PI,  // Start from the left (180 degrees)
+                      endAngle: 0           // End at the right (0 degrees)
+                  },
+                  style: {
+                      stroke: 'blue',       // Color of the arch
+                      fill: 'none',         // No fill for the arch
+                      lineWidth: 5          // Thickness of the arch line
+                  }
+              };
           },
-          data: [calculatedData], // This should be an array of your data points
+          data: [[0]]  // Single data point to define the center of the arch
         },
       ],
     };
@@ -91,7 +85,7 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
     };
   }, [progress]);
 
-  return <div ref={chartRef} style={{ width: '100%', height: '120px' }} />;
+  return <div ref={chartRef} style={{ width: '100%', height: '920px' }} />;
 };
 
 export default SpeedoChart;
