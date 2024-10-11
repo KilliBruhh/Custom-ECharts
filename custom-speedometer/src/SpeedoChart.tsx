@@ -9,20 +9,11 @@ interface SpeedoChartProps {
 }
 
 const calculatePercentage = (minVal:number, maxVal:number, progressVal:number): number => {
-
-  // Determine min and max for calculation
-  const min = Math.min(minVal, maxVal);
-  const max = Math.max(minVal, maxVal);
-
   // Calculate the percentage of progress
-  let percentage = ((progressVal) / (max)) * 100;
+  let percentage = ((progressVal) / (maxVal)) * 100;
   percentage = parseFloat(percentage.toFixed(2));
 
-  // Clamp the percentage between 0 and 100
-  console.log("Percentage: "+percentage);
-  console.log("MIN alue: " +min);
-  console.log("MAX Value: "+max);
-
+  // If precentage exseeds 100% => lock it at 100%
   if(percentage>100) {
     percentage = 100;
   }
@@ -33,51 +24,62 @@ const calculatePercentage = (minVal:number, maxVal:number, progressVal:number): 
 const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
   const chartRef = useRef<HTMLDivElement>(null);
 
-  const calculatedData = calculatePercentage(min, max, progress);
+  // Determine min and max for calculation
+  const minVal = Math.min(max, min);
+  const maxVal = Math.max(min, max);
+  const calculatedData = calculatePercentage(minVal, maxVal, progress);
   
   useEffect(() => {
     const chart = echarts.init(chartRef.current!);
 
     const options = {
       title: {
-        text: `Custom Progress Bar ${calculatedData}%`,
+        text: 'Custom Arch Chart',
         left: 'center',
-        bottom: -5
       },
       xAxis: {
-        type: 'value',
-        min: 0,
-        max: 100,  // Max value for the progress bar
-        show: true, // Hide the axis lines
+        show: false
       },
       yAxis: {
-        type: 'category',
-        data: ['Progress'], // Label for the progress bar
-        show: false, // Hide the axis labels
+        show: false
       },
-      series: [        
-        // Progress indicator
+      tooltip: {
+        trigger: 'item',
+      },
+      series: [
         {
           type: 'custom',
-          renderItem: (params: any, api: any) => {
-            const minPosition = api.coord([min, 0])[0];
-            const progressWidth = api.coord([calculatedData, 0])[0] - minPosition;
-            const barHeight = api.size([0, 1])[1] / 2;
+          renderItem: (
+            _params: any, 
+            api: any
+          ) => {
+            const percent = api.value(0); // Access the value for rendering
+            const startAngle = Math.PI; // 180 degrees start
+            const endAngle = startAngle - (percent / 100) * Math.PI; // Scale the angle based on percentage
 
+            const cx = 100; // Center X of the arch
+            const cy = 60;  // Center Y of the arch
+            const r = 50;   // Radius of the arch
+
+            const style = api.style({
+              stroke: 'rgba(255, 0, 0, 0.5)',
+              fill: 'rgba(255, 0, 0, 0.2)',
+              lineWidth: 2,
+            });
+  
             return {
-              type: 'rect',
+              type: 'arc',
               shape: {
-                x: minPosition,
-                y: params.coordSys.height / 2 - barHeight / 2,
-                width: progressWidth, // Dynamic width based on progress
-                height: 50,
+                cx,
+                cy,
+                r,
+                startAngle,
+                endAngle,
               },
-              style: {
-                fill: '#4caf50', // Progress color (green)
-              },
+              style: style,
             };
           },
-          data: [[calculatedData]], // Dynamic progress value
+          data: [calculatedData], // This should be an array of your data points
         },
       ],
     };
