@@ -15,12 +15,17 @@ const calculatePercentage = (minVal:number, maxVal:number, progressVal:number): 
   const max = Math.max(minVal, maxVal);
 
   // Calculate the percentage of progress
-  const percentage = ((progressVal) / (max)) * 100;
+  let percentage = ((progressVal) / (max)) * 100;
+  percentage = parseFloat(percentage.toFixed(2));
 
   // Clamp the percentage between 0 and 100
   console.log("Percentage: "+percentage);
   console.log("MIN alue: " +min);
   console.log("MAX Value: "+max);
+
+  if(percentage>100) {
+    percentage = 100;
+  }
 
   return percentage;
 }
@@ -29,62 +34,43 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
   const chartRef = useRef<HTMLDivElement>(null);
 
   const calculatedData = calculatePercentage(min, max, progress);
-  console.log(calculatePercentage(min, max, progress))
+  
   useEffect(() => {
     const chart = echarts.init(chartRef.current!);
 
     const options = {
       title: {
-        text: 'Custom Progress Bar',
+        text: `Custom Progress Bar ${calculatedData}%`,
+        left: 'center',
+        bottom: -5
       },
       xAxis: {
         type: 'value',
         min: 0,
         max: 100,  // Max value for the progress bar
-        show: false, // Hide the axis lines
+        show: true, // Hide the axis lines
       },
       yAxis: {
         type: 'category',
         data: ['Progress'], // Label for the progress bar
         show: false, // Hide the axis labels
       },
-      series: [
-        // Background of the progress bar
-        {
-          type: 'custom',
-          renderItem: (params: any, api: any) => {
-            const barWidth = api.size([api.value(0), 0])[0];
-            const barHeight = api.size([api.value(0), 0])[1];
-
-            return {
-              type: 'rect',
-              shape: {
-                x: 0,
-                y: params.coordSys.height / 2 - barHeight / 2,
-                width: api.coord([100, 0])[0], // Full width
-                height: barHeight,
-              },
-              style: {
-                fill: '#e0e0e0', // Background color
-              },
-            };
-          },
-          data: [[0]], // Static value for the background
-        },
+      series: [        
         // Progress indicator
         {
           type: 'custom',
           renderItem: (params: any, api: any) => {
-            const progressWidth = api.coord([api.value(0), 0])[0];
+            const minPosition = api.coord([min, 0])[0];
+            const progressWidth = api.coord([calculatedData, 0])[0] - minPosition;
             const barHeight = api.size([0, 1])[1] / 2;
 
             return {
               type: 'rect',
               shape: {
-                x: 0,
+                x: minPosition,
                 y: params.coordSys.height / 2 - barHeight / 2,
                 width: progressWidth, // Dynamic width based on progress
-                height: barHeight,
+                height: 50,
               },
               style: {
                 fill: '#4caf50', // Progress color (green)
@@ -103,7 +89,7 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
     };
   }, [progress]);
 
-  return <div ref={chartRef} style={{ width: '100%', height: '100px' }} />;
+  return <div ref={chartRef} style={{ width: '100%', height: '120px' }} />;
 };
 
 export default SpeedoChart;
