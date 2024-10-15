@@ -63,9 +63,6 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
           const cx = api.coord([0, 0])[0]; // Center x
           const cy = api.coord([0, 0])[1]; // Center y
       
-          const largeArcFlagPre50 = calculatedData > 50 ? 1 : 0; // Set large-arc flag if progress > 50%
-          const largeArcFlagPost50 = calculatedData > 50 ? 0 : 1; // Set large-arc flag if progress > 50%
-      
           return {
             type: 'path',
             shape: {
