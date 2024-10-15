@@ -1,11 +1,11 @@
 import React from 'react';
-import SpeedoChart from './SpeedoChart'
+import ProgresBar from './ProgresBar'
 
 const App = () => {
 
   return (
     <div>
-      <SpeedoChart min={0} max={100} progress={100} />
+      <ProgresBar min={0} max={100000} progress={50000} />
     </div>
   );
 };
