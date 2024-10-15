@@ -1,21 +1,21 @@
 import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 
-
 interface SpeedoChartProps {
   min: number;
   max: number;
   progress: number;
 }
 
-const calculatePercentage = (minVal:number, maxVal:number, progressVal:number): number => {
-  // Calculate the percentage of progress
-  let percentage = ((progressVal) / (maxVal)) * 100;
+const calculatePercentage = (minVal: number, maxVal: number, progressVal: number): number => {
+  let percentage = ((progressVal - minVal) / (maxVal - minVal)) * 100; // Correctly normalize the progress
   percentage = parseFloat(percentage.toFixed(2));
 
-  // If precentage exseeds 100% => lock it at 100%
-  if(percentage>100) {
+  // Ensure percentage does not exceed 100% or fall below 0%
+  if (percentage > 100) {
     percentage = 100;
+  } else if (percentage < 0) {
+    percentage = 0;
   }
 
   return percentage;
@@ -24,58 +24,62 @@ const calculatePercentage = (minVal:number, maxVal:number, progressVal:number): 
 const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
   const chartRef = useRef<HTMLDivElement>(null);
 
-  // Determine min and max for calculation
-  const minVal = Math.min(max, min);
-  const maxVal = Math.max(min, max);
-  const calculatedData = calculatePercentage(minVal, maxVal, progress);
-  
+  const calculatedData = calculatePercentage(min, max, progress);
+
   useEffect(() => {
     const chart = echarts.init(chartRef.current!);
 
     const options = {
       title: {
-        text: 'Arch Chart Example',
+        text: `Progress: ${calculatedData}%`,
+        left: 'center',
+        top: 'center',
+        textStyle: {
+          fontSize: 16,
+          fontWeight: 'bold',
+        },
       },
       xAxis: {
-          min: -1,
-          max: 1,
-          show: false
+        type: 'value',
+        min: 0,
+        max: 100,
+        show: false,
       },
       yAxis: {
-          min: 0,
-          max: 1,
-          show: false
+        type: 'category',
+        data: [''],
+        show: false,
       },
-      series: [
-        {
-          type: 'custom',
-          renderItem: function (
-            _params: any, 
-            api: any)  
-            {
-              var x = api.coord([api.value(0), 0])[0];
-              var y = api.coord([0, 0])[1];
-              var radius = api.size([0, 1])[1];
+      series: [{
+        type: 'custom',
+        renderItem: (params: any, api: any) => {
+          const startAngle = -Math.PI; // Starting angle for the arc (180 degrees)
+          const endAngle = startAngle + (Math.PI * (calculatedData / 100)); // Ending angle based on progress
 
-              return {
-                  type: 'arc',
-                  shape: {
-                      cx: x,
-                      cy: y,
-                      r: radius * .8,  // Adjust the radius of the arch
-                      startAngle: Math.PI,  // Start from the left (180 degrees)
-                      endAngle: 0           // End at the right (0 degrees)
-                  },
-                  style: {
-                      stroke: 'blue',       // Color of the arch
-                      fill: 'none',         // No fill for the arch
-                      lineWidth: 5          // Thickness of the arch line
-                  }
-              };
-          },
-          data: [[0]]  // Single data point to define the center of the arch
+          const cx = api.coord([0, 0])[0]; // Center x
+          const cy = api.coord([0, 0])[1]; // Center y
+          const radius = 100; // Radius of the arc
+
+          return {
+            type: 'path',
+            shape: {
+              pathData: `
+                M ${cx} ${cy} 
+                L ${cx + radius * Math.cos(startAngle)} ${cy + radius * Math.sin(startAngle)}
+                A ${radius} ${radius} 0 ${calculatedData > 50 ? 1 : 0} 1 
+                  ${cx + radius * Math.cos(endAngle)} ${cy + radius * Math.sin(endAngle)}
+                Z
+              `,
+            },
+            style: {
+              fill: '#4caf50', // Progress color (green)
+              stroke: '#000', // Outline color
+              lineWidth: 2,
+            },
+          };
         },
-      ],
+        data: [{}], // Single data item to trigger renderItem
+      }],
     };
 
     chart.setOption(options);
@@ -85,7 +89,7 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
     };
   }, [progress]);
 
-  return <div ref={chartRef} style={{ width: '100%', height: '920px' }} />;
+  return <div ref={chartRef} style={{ width: '100%', height: '520px' }} />;
 };
 
 export default SpeedoChart;

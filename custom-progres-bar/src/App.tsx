@@ -5,7 +5,7 @@ const App = () => {
 
   return (
     <div>
-      <ProgresBar min={0} max={100000} progress={522} />
+      <ProgresBar min={0} max={100000} progress={50000} />
     </div>
   );
 };
