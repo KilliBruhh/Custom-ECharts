@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import SpeedoChart from './SpeedoChart';
 
 const App: React.FC = () => {
-  const [progressVal, setProgressVal] = useState(0);   // Progress value
+  const [progressVal, setProgressVal] = useState(100);   // Progress value
   const [isRunning, setIsRunning] = useState(false);   // Track whether animation is running
   const intervalRef = useRef<NodeJS.Timeout | null>(null); // Reference for the interval
 

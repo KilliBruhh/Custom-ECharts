@@ -32,8 +32,8 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
     const options = {
       title: {
         text: `Progress: ${calculatedData}%`,
-        left: 'center',
-        top: 'center',
+        left: 110,
+        top: 270,
         textStyle: {
           fontSize: 16,
           fontWeight: 'bold',
@@ -68,10 +68,10 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
             shape: {
               pathData: `
                 M ${cx + innerRadius * Math.cos(startAngle)} ${cy + innerRadius * Math.sin(startAngle)}
-                A ${innerRadius} ${innerRadius} 0 0 1 
+                A ${innerRadius} ${innerRadius} 0 0 1
                   ${cx + innerRadius * Math.cos(endAngle)} ${cy + innerRadius * Math.sin(endAngle)}
                 L ${cx + outerRadius * Math.cos(endAngle)} ${cy + outerRadius * Math.sin(endAngle)}
-                A ${outerRadius} ${outerRadius} 0 0 0 
+                A ${outerRadius} ${outerRadius} 0 0 0
                   ${cx + outerRadius * Math.cos(startAngle)} ${cy + outerRadius * Math.sin(startAngle)}
                 Z
               `,

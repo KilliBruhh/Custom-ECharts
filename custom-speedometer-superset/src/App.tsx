@@ -45,7 +45,7 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <SpeedoChart min={0} max={100} progress={100} progress2={progressVal2}/>
+      <SpeedoChart min={0} max={100} progress={progressVal} progress2={progressVal2}/>
       <div style={{ marginTop: '20px' }}>
         <button onClick={handleStart} disabled={isRunning}>
           Start

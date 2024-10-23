@@ -28,33 +28,14 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress, progress2
   const calculatedData = calculatePercentage(min, max, progress);
   const calculatedData2 = calculatePercentage(min, max, progress2);
 
-  // Values 1st Main Chart
-
-  const startAngle = -Math.PI; // Starting angle for the arc (180 degrees)
-  const endAngle = startAngle + (Math.PI * (calculatedData / 100)); // Ending angle based on progress
-  const outerRadius = 110;
-  const innerRadius = 80;
-
-
-  // Values / Types for Segment Chart (use type.ts file in superset)
-
-  var outerRadiusSecondChart = 115;
-  var innerRadiusSecondChart = 122;
-  const segments = [
-    {start: 0, end: 50, color: "#49b53f"},
-    {start: 50, end: 70, color: "#dba307"},
-    {start: 70, end: 100, color: "#db0707"},
-  ]
-
-
   useEffect(() => {
     const chart = echarts.init(chartRef.current!);
 
     const options = {
       title: {
         text: `Progress: ${calculatedData}% \n\n Progress 2: ${calculatedData2}%`,
-        left: 110,
-        top: 270,
+        left: 'center',
+        top: 'center',
         textStyle: {
           fontSize: 16,
           fontWeight: 'bold',
@@ -75,7 +56,13 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress, progress2
         {
         type: 'custom',
         renderItem: (params: any, api: any) => {
-
+          const startAngle = -Math.PI; // Starting angle for the arc (180 degrees)
+          const endAngle = startAngle + (Math.PI * (calculatedData / 100)); // Ending angle based on progress
+      
+          // Create the Rainbow Arch radiuses
+          const outerRadius = 100;
+          const innerRadius = 80;
+      
           const cx = api.coord([0, 0])[0]; // Center x
           const cy = api.coord([0, 0])[1]; // Center y
       
@@ -101,40 +88,36 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress, progress2
         },
         data: [{}], // Single data item to trigger renderItem
         },
-        { // Start Segmented Charts
+        {
           type: 'custom',
           renderItem: (params: any, api:any) => {
+            const startAngle = -Math.PI;
+            const endAngle2 = startAngle + (Math.PI * (calculatedData2/100));
+
+            const outerRadius2 = 120;
+            const innerRadius2 = 100;
 
             const cx = api.coord([0,0])[0];  // Center x
             const cy = api.coord([0,0])[1];  // Center y
 
-            const segmentArcs = segments.map((segment) => {
-              const startAngle = -Math.PI + (Math.PI * (segment.start / 100)); // Convert start percentage to radians
-              const endAngle = -Math.PI + (Math.PI * (segment.end / 100)); // Convert end percentage to radians
-
-              return {
-                type: 'path',
-                shape: {
-                  pathData:`
-                    M ${cx + innerRadiusSecondChart * Math.cos(startAngle)} ${cy + innerRadiusSecondChart * Math.sin(startAngle)}
-                    A ${innerRadiusSecondChart} ${innerRadiusSecondChart} 0 0 1
-                      ${cx + innerRadiusSecondChart * Math.cos(endAngle)} ${cy + innerRadiusSecondChart * Math.sin(endAngle)}
-                    L ${cx + outerRadiusSecondChart * Math.cos(endAngle)} ${cy + outerRadiusSecondChart * Math.sin(endAngle)}
-                    A ${outerRadiusSecondChart} ${outerRadiusSecondChart} 0 0 0
-                      ${cx + outerRadiusSecondChart * Math.cos(startAngle)} ${cy + outerRadiusSecondChart * Math.sin(startAngle)}
-                    Z
-                    `,
-                  },
-                  style: {
-                    fill: segment.color,
-                    stroke: '#000',
-                    lineWidth: 2,
-                  },
-              };
-            });
             return {
-              type: 'group',
-              children: segmentArcs, // Add all arcs as children of the group
+              type: 'path',
+              shape: {
+                pathData: `
+                M ${cx + innerRadius2* Math.cos(startAngle)} ${cy + innerRadius2 * Math.sin(startAngle)}
+                A ${innerRadius2} ${innerRadius2} 0 0 1 
+                  ${cx + innerRadius2 * Math.cos(endAngle2)} ${cy + innerRadius2 * Math.sin(endAngle2)}
+                L ${cx + outerRadius2 * Math.cos(endAngle2)} ${cy + outerRadius2 * Math.sin(endAngle2)}
+                A ${outerRadius2} ${outerRadius2} 0 0 0 
+                  ${cx + outerRadius2 * Math.cos(startAngle)} ${cy + outerRadius2 * Math.sin(startAngle)}
+                Z
+                `
+              },
+              style: {
+                fill: '#3234a8', // Progress color (green)
+                stroke: '#000', // Outline color
+                lineWidth: 2,
+              },
             };
           },
           data: [{}]
