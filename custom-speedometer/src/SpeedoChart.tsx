@@ -1,21 +1,30 @@
 import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 
+
 interface SpeedoChartProps {
   min: number;
   max: number;
   progress: number;
 }
 
-const calculatePercentage = (minVal: number, maxVal: number, progressVal: number): number => {
-  let percentage = ((progressVal - minVal) / (maxVal - minVal)) * 100; // Correctly normalize the progress
+const calculatePercentage = (minVal:number, maxVal:number, progressVal:number): number => {
+
+  // Determine min and max for calculation
+  const min = Math.min(minVal, maxVal);
+  const max = Math.max(minVal, maxVal);
+
+  // Calculate the percentage of progress
+  let percentage = ((progressVal) / (max)) * 100;
   percentage = parseFloat(percentage.toFixed(2));
 
-  // Ensure percentage does not exceed 100% or fall below 0%
-  if (percentage > 100) {
+  // Clamp the percentage between 0 and 100
+  console.log("Percentage: "+percentage);
+  console.log("MIN alue: " +min);
+  console.log("MAX Value: "+max);
+
+  if(percentage>100) {
     percentage = 100;
-  } else if (percentage < 0) {
-    percentage = 0;
   }
 
   return percentage;
@@ -25,7 +34,7 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
   const chartRef = useRef<HTMLDivElement>(null);
 
   const calculatedData = calculatePercentage(min, max, progress);
-
+  
   useEffect(() => {
     const chart = echarts.init(chartRef.current!);
 
@@ -42,13 +51,13 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
       xAxis: {
         type: 'value',
         min: 0,
-        max: 100,
-        show: false,
+        max: 100,  // Max value for the progress bar
+        show: true, // Hide the axis lines
       },
       yAxis: {
         type: 'category',
-        data: [''],
-        show: false,
+        data: ['Progress'], // Label for the progress bar
+        show: false, // Hide the axis labels
       },
       series: [{
         type: 'custom',
@@ -83,8 +92,7 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
             },
           };
         },
-        data: [{}], // Single data item to trigger renderItem
-      }],      
+      ],
     };
 
     chart.setOption(options);
@@ -94,7 +102,7 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
     };
   }, [progress]);
 
-  return <div ref={chartRef} style={{ width: '100%', height: '520px' }} />;
+  return <div ref={chartRef} style={{ width: '100%', height: '120px' }} />;
 };
 
 export default SpeedoChart;
