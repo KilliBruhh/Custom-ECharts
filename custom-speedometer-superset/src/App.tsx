@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import SpeedoChart from './SpeedoChart';
 
 const App: React.FC = () => {
-  const [progressVal, setProgressVal] = useState(100);   // Progress value
+  const [progressVal, setProgressVal] = useState(5);   // Progress value
+  const [progressVal2, setProgressVal2] = useState(5);   // Progress value
   const [isRunning, setIsRunning] = useState(false);   // Track whether animation is running
   const intervalRef = useRef<NodeJS.Timeout | null>(null); // Reference for the interval
 
@@ -13,6 +14,13 @@ const App: React.FC = () => {
         setProgressVal(prevProgress => {
           if (prevProgress < 100) {
             return prevProgress + 1; // Increment progress
+          } else {
+            return 0; // Reset progress to 0 after 100%
+          }
+        });
+        setProgressVal2(prevProgress => {
+          if (prevProgress < 100) {
+            return prevProgress + 2; // Increment progress
           } else {
             return 0; // Reset progress to 0 after 100%
           }
@@ -37,7 +45,7 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <SpeedoChart min={0} max={100} progress={progressVal} />
+      <SpeedoChart min={0} max={100} progress={progressVal} progress2={progressVal2}/>
       <div style={{ marginTop: '20px' }}>
         <button onClick={handleStart} disabled={isRunning}>
           Start
