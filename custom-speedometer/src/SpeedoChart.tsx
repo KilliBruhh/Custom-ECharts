@@ -8,7 +8,7 @@ interface SpeedoChartProps {
   progress: number;
 }
 
-const calculatePercentage = (minVal:number, maxVal:number, progressVal:number): number => {
+const calculatePercentage = (minVal: number, maxVal: number, progressVal: number): number => {
 
   // Determine min and max for calculation
   const min = Math.min(minVal, maxVal);
@@ -19,11 +19,11 @@ const calculatePercentage = (minVal:number, maxVal:number, progressVal:number): 
   percentage = parseFloat(percentage.toFixed(2));
 
   // Clamp the percentage between 0 and 100
-  console.log("Percentage: "+percentage);
-  console.log("MIN alue: " +min);
-  console.log("MAX Value: "+max);
+  console.log("Percentage: " + percentage);
+  console.log("MIN alue: " + min);
+  console.log("MAX Value: " + max);
 
-  if(percentage>100) {
+  if (percentage > 100) {
     percentage = 100;
   }
 
@@ -34,7 +34,7 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
   const chartRef = useRef<HTMLDivElement>(null);
 
   const calculatedData = calculatePercentage(min, max, progress);
-  
+
   useEffect(() => {
     const chart = echarts.init(chartRef.current!);
 
@@ -64,14 +64,14 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
         renderItem: (params: any, api: any) => {
           const startAngle = -Math.PI; // Starting angle for the arc (180 degrees)
           const endAngle = startAngle + (Math.PI * (calculatedData / 100)); // Ending angle based on progress
-      
+
           // Create the Rainbow Arch radiuses
           const outerRadius = 100;
           const innerRadius = 80;
-      
+
           const cx = api.coord([0, 0])[0]; // Center x
           const cy = api.coord([0, 0])[1]; // Center y
-      
+
           return {
             type: 'path',
             shape: {
@@ -91,7 +91,8 @@ const SpeedoChart: React.FC<SpeedoChartProps> = ({ min, max, progress }) => {
               lineWidth: 2,
             },
           };
-        },
+        }
+      },
       ],
     };
 
