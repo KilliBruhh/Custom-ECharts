@@ -1,5 +1,5 @@
   import React from 'react';
-  import LineBarChart from './lineBarChart';
+  import LineBarChart from './LineBarChart';
 
   const mockData = [
     { name: 'Product A', value: 120 },

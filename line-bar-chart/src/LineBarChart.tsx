@@ -33,8 +33,13 @@ const LineBarChart: React.FC<LineBarChartProps> = ({ data, title }) => {
         series: [
           {
             data: data.map(item => item.value),  // Data points for the series
-            type: 'line',  // Chart type (bar chart)
+            type: 'bar',  // Chart type (bar chart)
             smooth: true,  // Smooth lines
+            
+          },
+          {
+            data: data.map(item => item.value),
+            type: 'line',
             
           },
         ],
@@ -58,4 +63,4 @@ const LineBarChart: React.FC<LineBarChartProps> = ({ data, title }) => {
   );
 };
 
-export default lineBarChart;
+export default LineBarChart;
