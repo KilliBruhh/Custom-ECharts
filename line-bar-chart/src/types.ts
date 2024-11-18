@@ -1,6 +1,7 @@
 export interface ChartProps {
-    data: Array<{ category: string; value: number }>;
+    data: Array<{ year: number; category: string; value: number }>;
     width: number;
     height: number;
     title: string;
+    yearAmt: number
 }  
