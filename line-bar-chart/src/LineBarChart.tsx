@@ -40,7 +40,7 @@ function showSeries(data:any, yearAmt:number) {
         return record ? record.value : 0; // Same logic for line chart
       }),
       lineStyle: {
-        width: 4, // Customize line width
+        width: 3, // Customize line width
         type: "solid", // Solid line type
       },
       smooth: false, // Optional: Makes the line smoother
