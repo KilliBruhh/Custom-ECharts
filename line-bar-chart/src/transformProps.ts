@@ -3,7 +3,7 @@ import { ChartProps } from "./types";
 export function transformProps(chartProps: ChartProps) {
   var { data, width, height, title } = chartProps;
 
-  title = "Chart"
+  title = "Chart";
 
   return {
     data,
