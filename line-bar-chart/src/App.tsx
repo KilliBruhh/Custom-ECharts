@@ -5,10 +5,10 @@ import { transformProps } from "./transformProps";
 const App: React.FC = () => {
   const chartProps = {
     data: [
-      { year: 2024, category: "A", value: 10},
+      { year: 0, category: "0", value: 0},
     ],
-    width: 800,
-    height: 400,
+    width: 0,
+    height: 0,
     title: "Feest",
     yearAmt: 0,
   };
