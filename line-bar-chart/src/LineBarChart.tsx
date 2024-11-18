@@ -9,14 +9,54 @@ const LineBarChart: React.FC<ChartProps> = (props:ChartProps) => {
     height,
     width,
     data,
-    title
+    title,
+    yearAmt,
   } = props
+  
+
+function showSeries(data:any, yearAmt:number) {
+      
+  // const series:any = [];
+
+  const categories = Array.from(new Set(data.map((item: { category: any; }) => item.category)));
+  const years = Array.from(new Set(data.map((item: { year: any; }) => item.year)));
+
+  const series = years.map((year:any) => ({
+    name: year.toString(),
+    type: "bar",
+    data: categories.map((category) => {
+      const record = data.find((item: { year: any; category: unknown; }) => item.year === year && item.category === category);
+      return record ? record.value : 0; // Default to 0 if no data exists
+    })
+  })).concat(
+    years.map((year: any) => ({
+      name: `${year} Line`,
+      type: "line", // Line chart
+      data: categories.map((category) => {
+        const record = data.find(
+          (item: { year: any; category: unknown }) =>
+            item.year === year && item.category === category
+        );
+        return record ? record.value : 0; // Same logic for line chart
+      }),
+      lineStyle: {
+        width: 4, // Customize line width
+        type: "solid", // Solid line type
+      },
+      smooth: false, // Optional: Makes the line smoother
+    }))
+  );
+
+  return series
+}
 
   useEffect(() => {
     // Initialize the chart when the component mounts
     if (chartRef.current) {
       const chartInstance = echarts.init(chartRef.current);  // Initialize ECharts
 
+      const categories = Array.from(new Set(data.map((item: { category: any; }) => item.category)));
+      
       // Define the chart configuration options
       const option = {
         title: {
@@ -33,37 +73,14 @@ const LineBarChart: React.FC<ChartProps> = (props:ChartProps) => {
         },
         xAxis: {
           type: 'category',
-          data: ['A', 'B', 'C'], // Labels for the categories
+          data: categories, // Labels for the categories
         },
         yAxis: {
           type: 'value',
         },
         series: [
-          {
-            type: 'custom',
-            renderItem: function (params:any, api:any) {
-              // x position of the bar
-              const x = api.coord([api.value(0), 0])[0];
-              // y position of the bar (bottom of the chart to the data value height)
-              const y = api.coord([0, api.value(1)])[1];
-              // Bar width and height
-              const width = api.size([1, 0])[0] * 0.6; // 60% of the category width
-              const height = api.size([0, api.value(1)])[1];
-              
-              // Return the graphical element configuration
-              return {
-                type: 'rect',
-                shape: {
-                  x: x - width / 2, // Center the bar
-                  y: y,
-                  width: width,
-                  height: height,
-                },
-                style: api.style(), // Use default styling (color, etc.)
-              };
-            },
-            data: data
-          },// End Serie 1
+          // Loop x amount of times  
+          ...showSeries(data, yearAmt)
         ], // End Serie Block
       };
       
