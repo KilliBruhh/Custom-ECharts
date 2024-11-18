@@ -5,4 +5,3 @@
 - if you afjust the max above 100 it will recalculate and show data on a scale of 0-100
 - Video:
 - <img src="img/arch_chart_video.gif" alt="Preview" width="800"/>
-- Changes
