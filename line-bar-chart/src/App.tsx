@@ -1,19 +1,27 @@
-  import React from 'react';
-  import LineBarChart from './LineBarChart';
+import React from "react";
+import LineBarChart from "./LineBarChart";
+import { transformProps } from "./transformProps";
 
-  const mockData = [
-    { name: 'Product A', value: 120 },
-    { name: 'Product B', value: 200 },
-    { name: 'Product C', value: 150 },
-    { name: 'Product D', value: 80 },
-    { name: 'Product E', value: 70 },
-  ];
+const App: React.FC = () => {
+  const chartProps = {
+    data: [
+      { category: "A", value: 10 },
+      { category: "B", value: 20 },
+      { category: "C", value: 30 },
+    ],
+    width: 800,
+    height: 400,
+    title: "Feest",
+  };
 
-  const App: React.FC = () => (
+  const transformedProps = transformProps(chartProps);
+
+  return (
     <div>
-      <h1>Simple Bar Chart</h1>
-      <LineBarChart data={mockData} title="Sales Data" />
+      <h1>Custom Line Bar Chart</h1>
+      <LineBarChart {...transformedProps} />
     </div>
   );
+};
 
-  export default App;
+export default App;

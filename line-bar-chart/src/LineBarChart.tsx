@@ -1,14 +1,16 @@
-import React, { useEffect, useRef } from 'react';
-import * as echarts from 'echarts';
+import React, { useEffect, useRef } from "react";
+import * as echarts from "echarts";
+import { ChartProps } from "./types";
 
-// Define the props for the custom chart
-interface LineBarChartProps {
-  data: Array<{ name: string; value: number }>;  // Array of data points for the chart
-  title: string;                                // Title of the chart
-}
+const LineBarChart: React.FC<ChartProps> = (props:ChartProps) => {
+  const chartRef = useRef<HTMLDivElement>(null);
 
-const LineBarChart: React.FC<LineBarChartProps> = ({ data, title }) => {
-  const chartRef = useRef<HTMLDivElement>(null);  // Reference to the chart container
+  const {
+    height,
+    width,
+    data,
+    title
+  } = props
 
   useEffect(() => {
     // Initialize the chart when the component mounts
@@ -18,32 +20,53 @@ const LineBarChart: React.FC<LineBarChartProps> = ({ data, title }) => {
       // Define the chart configuration options
       const option = {
         title: {
-          text: title,  // Title of the chart
+          text: title, // Title of the chart
         },
         tooltip: {
-          trigger: 'axis',  // Tooltip on hover
+          trigger: 'axis', // Tooltip on hover
+          axisPointer: {
+            type: 'shadow', // Shadow pointer
+          },
+        },
+        legend: {
+          data: ['Value 1', 'Value 2', 'Value 3'], // Legend for the series
         },
         xAxis: {
-          type: 'category',  // X-axis as category type
-          data: data.map(item => item.name),  // Categories from the data
+          type: 'category',
+          data: ['A', 'B', 'C'], // Labels for the categories
         },
         yAxis: {
-          type: 'value',  // Y-axis as value type
+          type: 'value',
         },
         series: [
           {
-            data: data.map(item => item.value),  // Data points for the series
-            type: 'bar',  // Chart type (bar chart)
-            smooth: true,  // Smooth lines
-            
-          },
-          {
-            data: data.map(item => item.value),
-            type: 'line',
-            
-          },
-        ],
+            type: 'custom',
+            renderItem: function (params:any, api:any) {
+              // x position of the bar
+              const x = api.coord([api.value(0), 0])[0];
+              // y position of the bar (bottom of the chart to the data value height)
+              const y = api.coord([0, api.value(1)])[1];
+              // Bar width and height
+              const width = api.size([1, 0])[0] * 0.6; // 60% of the category width
+              const height = api.size([0, api.value(1)])[1];
+              
+              // Return the graphical element configuration
+              return {
+                type: 'rect',
+                shape: {
+                  x: x - width / 2, // Center the bar
+                  y: y,
+                  width: width,
+                  height: height,
+                },
+                style: api.style(), // Use default styling (color, etc.)
+              };
+            },
+            data: [10,20,30]
+          },// End Serie 1
+        ], // End Serie Block
       };
+      
 
       // Set the option for the chart instance
       chartInstance.setOption(option);
