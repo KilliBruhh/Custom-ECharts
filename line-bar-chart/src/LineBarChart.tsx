@@ -62,7 +62,7 @@ const LineBarChart: React.FC<ChartProps> = (props:ChartProps) => {
                 style: api.style(), // Use default styling (color, etc.)
               };
             },
-            data: [10,20,30]
+            data: data
           },// End Serie 1
         ], // End Serie Block
       };
