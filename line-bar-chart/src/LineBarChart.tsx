@@ -56,7 +56,8 @@ function showSeries(data:any, yearAmt:number) {
       const chartInstance = echarts.init(chartRef.current);  // Initialize ECharts
 
       const categories = Array.from(new Set(data.map((item: { category: any; }) => item.category)));
-      
+      const years = Array.from(new Set(data.map((item: { year: any; }) => item.year)));
+    
       // Define the chart configuration options
       const option = {
         title: {
@@ -69,7 +70,7 @@ function showSeries(data:any, yearAmt:number) {
           },
         },
         legend: {
-          data: ['Value 1', 'Value 2', 'Value 3'], // Legend for the series
+          data: years.map((year) => year.toString()).concat(years.map((year) => `${year} Line`)),
         },
         xAxis: {
           type: 'category',
