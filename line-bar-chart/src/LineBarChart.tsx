@@ -1,14 +1,16 @@
-import React, { useEffect, useRef } from 'react';
-import * as echarts from 'echarts';
+import React, { useEffect, useRef } from "react";
+import * as echarts from "echarts";
+import { ChartProps } from "./types";
 
-// Define the props for the custom chart
-interface LineBarChartProps {
-  data: Array<{ name: string; value1: number;value2: number;value3: number }>;  // Array of data points for the chart
-  title: string;                                // Title of the chart
-}
+const LineBarChart: React.FC<ChartProps> = (props:ChartProps) => {
+  const chartRef = useRef<HTMLDivElement>(null);
 
-const LineBarChart: React.FC<LineBarChartProps> = ({ data, title }) => {
-  const chartRef = useRef<HTMLDivElement>(null);  // Reference to the chart container
+  const {
+    height,
+    width,
+    data,
+    title
+  } = props
 
   useEffect(() => {
     // Initialize the chart when the component mounts
@@ -18,7 +20,7 @@ const LineBarChart: React.FC<LineBarChartProps> = ({ data, title }) => {
       // Define the chart configuration options
       const option = {
         title: {
-          text: 'Custom Bar Chart', // Title of the chart
+          text: title, // Title of the chart
         },
         tooltip: {
           trigger: 'axis', // Tooltip on hover
